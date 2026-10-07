@@ -1,64 +1,38 @@
-'use client';
-import React from 'react'
-import { Md2PosterContent, Md2Poster, Md2PosterHeader, Md2PosterFooter } from 'markdown-to-poster'
-import { useSearchParams } from 'next/navigation';
-import Image from 'next/image'
+'use client'
 
-type IThemeType = 'blue' | 'pink' | 'purple' | 'green' | 'yellow' | 'gray' | 'red' | 'indigo' | 'SpringGradientWave';
-
-
-const defaultContentMd = `# AI的发展
-
-
-人工智能(AI)正在以前所未有的速度发展，深刻改变着我们的生活方式。从ChatGPT到DALL-E，从自动驾驶到智能医疗，AI技术正在各个领域展现其强大潜力。
-
-## 主要突破
-1. **大语言模型**: GPT系列模型带来了自然语言处理的重大突破
-2. **计算机视觉**: 在图像识别和生成领域取得显著进展
-3. **智能决策**: 在游戏和复杂决策系统中超越人类表现
-
-## 未来展望
-- 更强大的多模态模型
-- AI与各行业深度融合
-- 负责任的AI发展和伦理规范
-
-![AI发展](https://images.unsplash.com/photo-1677442136019-21780ecad995)
-`
+import { useMemo } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { resolveFrameBackground } from '@/lib/cardPresets'
+import { API_DEFAULTS, parsePosterRecord } from '@/lib/posterRequest'
+import { CardPoster } from './CardPoster'
+import { useCardPages } from './useCardPages'
 
 export default function PosterView() {
-  // 需要根据url参数，作为mdString 的默认值
   const searchParams = useSearchParams()
-
-  function safeDecodeURIComponent(val: string | null | undefined, fallback: string) {
-    if (typeof val !== 'string') return fallback;
-    try {
-      // 防止重复 decode
-      return decodeURIComponent(val);
-    } catch {
-      return val;
-    }
-  }
-
-  const mdString = safeDecodeURIComponent(searchParams?.get('content'), defaultContentMd);
-  const headerString = safeDecodeURIComponent(searchParams?.get('header'), '');
-  const footerString = safeDecodeURIComponent(searchParams?.get('footer'), 'Powered by markdown-to-image-serve.jcommon.top')
-  const logo = ('/logo.png')
-  const logoString = safeDecodeURIComponent(searchParams?.get('logo'), logo);
-  const theme = safeDecodeURIComponent(searchParams?.get('theme'), 'SpringGradientWave');
+  const job = useMemo(() => {
+    const record = Object.fromEntries(searchParams?.entries() ?? [])
+    return parsePosterRecord(record, API_DEFAULTS)
+  }, [searchParams])
+  const { pages, ready, measure, width, height } = useCardPages(job.markdown, job.settings)
+  const background = resolveFrameBackground(job.settings)
 
   return (
-    <div className="poster-content" style={{display: "inline-block"}}>
-          {/* Preview */}
-            <Md2Poster theme={theme as IThemeType} >
-              <Md2PosterHeader  className="flex justify-center items-center px-4 font-medium text-lg">
-                <span>{headerString || new Date().toISOString().slice(0, 10)} </span>
-              </Md2PosterHeader>
-              <Md2PosterContent>{mdString}</Md2PosterContent>
-              <Md2PosterFooter className='text-center'>
-                <Image src={logoString} alt="logo" width={20} height={20} className='inline-block mr-2' />
-                {footerString}
-              </Md2PosterFooter>
-            </Md2Poster>
-    </div>
+    <>
+      {measure}
+      <div className="poster-root" data-poster-ready={ready ? '1' : '0'} style={{ display: 'inline-flex', flexDirection: 'column', gap: 28, padding: 8 }}>
+        {pages.map((markdown, index) => (
+          <CardPoster
+            key={`${index}-${markdown.slice(0, 24)}`}
+            markdown={markdown}
+            settings={job.settings}
+            width={width}
+            height={height}
+            background={background}
+            pageIndex={index}
+            pageCount={pages.length}
+          />
+        ))}
+      </div>
+    </>
   )
 }

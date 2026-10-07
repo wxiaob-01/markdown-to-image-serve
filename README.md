@@ -314,17 +314,41 @@ docker run -p 3000:3000 markdown-to-image-serve
 
 ```json
 {
-  "markdown": "string",       // 必需：Markdown 内容
-  "header": "string",         // 可选：页眉文本
-  "footer": "string",         // 可选：页脚文本
-  "logo": "string",           // 可选：logo图片URL
-  "theme": "string"           // 可选：主题名称
+  "markdown": "string",
+  "header": "string",
+  "footer": "string",
+  "logo": "string",
+  "theme": "warm | gray | dream | fresh | salt | sunset | ink | night | sakura | paper | mint | indigo",
+  "size": "xhs | phone | square | long | custom",
+  "width": 540,
+  "height": 720,
+  "font": "system | song | serif | mono | inter",
+  "bg": "theme | solid | gradient | image",
+  "bgColor": "#fff4ec",
+  "gradient": "warm-glow | silver | dream | fresh | sea | dusk",
+  "bgImage": "https://example.com/bg.jpg",
+  "showHeader": true,
+  "showFooter": true,
+  "showLogo": true,
+  "showPager": true,
+  "split": "none | hr | auto",
+  "format": "png | jpeg | webp",
+  "card": 0,
+  "cards": "all",
+  "zip": false
 }
 ```
 
-**支持的主题**:
-- `blue`, `pink`, `purple`, `green`, `yellow`, `gray`, `red`, `indigo`
-- `SpringGradientWave` (默认)
+不传 `size` / `split` 时仍是一张长图，和以前的单张海报兼容。`theme` 也接受旧名字：`blue`、`pink`、`purple`、`green`、`yellow`、`gray`、`red`、`indigo`、`SpringGradientWave`，会映射到对应的新预设。
+
+多张卡片：
+
+- `split: "hr"` 按 Markdown 里单独一行的 `---` 拆开
+- `split: "auto"` 先按横线拆，再按卡片高度分页
+- `cards: "all"` 返回 `{ url, urls, count }`
+- `zip: true` 返回一个 ZIP 地址，里面是每一张图
+
+`POST /api/generatePoster` 使用同一组参数，默认仍返回一张图片的二进制。`zip: true` 或 `cards: "all"` 时返回 ZIP。
 
 #### 📱 社交媒体营销示例
 
