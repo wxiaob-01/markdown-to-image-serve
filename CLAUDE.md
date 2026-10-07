@@ -8,7 +8,7 @@
 
 **主要功能**:
 - Markdown 实时预览编辑器
-- 9 种内置主题 (blue, pink, purple, green, yellow, gray, red, indigo, SpringGradientWave)
+- 12 套免费卡片预设（温暖柔和、简约高级灰、梦幻渐变等），旧主题名会映射过来
 - 自定义页眉、页脚、Logo
 - 中文字体支持 (SimSun)
 - RESTful API 接口
@@ -72,11 +72,18 @@ patches/
 **请求体**:
 ```json
 {
-  "markdown": "string (必填) - Markdown 内容",
-  "header": "string (可选) - 页眉文字",
-  "footer": "string (可选) - 页脚文字",
-  "logo": "string (可选) - Logo URL",
-  "theme": "string (可选, 默认: SpringGradientWave) - 主题名称"
+  "markdown": "string (必填)",
+  "header": "string",
+  "footer": "string",
+  "logo": "string",
+  "theme": "warm | gray | dream | fresh | salt | sunset | ink | night | sakura | paper | mint | indigo",
+  "size": "xhs | phone | square | long | custom",
+  "font": "system | song | serif | mono | inter",
+  "bg": "theme | solid | gradient | image",
+  "split": "none | hr | auto",
+  "format": "png | jpeg | webp",
+  "cards": "all",
+  "zip": false
 }
 ```
 
@@ -88,9 +95,9 @@ patches/
 ```
 
 ### POST `/api/generatePoster`
-生成海报并返回原始图片 Buffer (PNG)
+生成海报并返回图片二进制。参数与 `generatePosterImage` 相同。默认 `image/png`，`format` 也可为 `jpeg` / `webp`。`zip: true` 或 `cards: "all"` 时返回 ZIP。
 
-**响应**: Content-Type: image/png, 最大执行时间 60 秒
+**响应**: 图片二进制或 ZIP，最大执行时间 60 秒
 
 ### GET `/api/images/[filename]`
 获取生成的图片 (存储在 `/tmp/uploads/posters/`)

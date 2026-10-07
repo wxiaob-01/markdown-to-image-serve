@@ -119,10 +119,27 @@ Markdown To Image Serve 是一款开箱即用的 Markdown 转图片 API 服务�
 ```json5
 {
   "markdown": "string",       // Markdown 内容
-  "header": "string",         // 可选：页眉文本
+  "header": "string",         // 可选：页眉文本，空则用当天日期
   "footer": "string",         // 可选：页脚文本
-  "logo": "string",           // 可选：logo图片url
-  "theme": "blue | pink | purple | green | yellow | gray | red | indigo | SpringGradientWave" // 可选：主题
+  "logo": "string",           // 可选：logo 图片 URL
+  "theme": "warm | gray | dream | fresh | salt | sunset | ink | night | sakura | paper | mint | indigo",
+  "size": "xhs | phone | square | long | custom", // 3:4 / 9:16 / 1:1 / 长图 / 自定义
+  "width": 540,               // size=custom 时生效
+  "height": 720,
+  "font": "system | song | serif | mono | inter",
+  "bg": "theme | solid | gradient | image",
+  "bgColor": "#fff4ec",
+  "gradient": "warm-glow | silver | dream | fresh | sea | dusk",
+  "bgImage": "https://...",
+  "showHeader": true,
+  "showFooter": true,
+  "showLogo": true,
+  "showPager": true,
+  "split": "none | hr | auto", // 默认 none，兼容旧的单张长图
+  "format": "png | jpeg | webp",
+  "card": 0,                  // 单张时的卡片下标
+  "cards": "all",             // 返回全部卡片 URL
+  "zip": false                // true 时返回 ZIP 地址
 }
 ```
 

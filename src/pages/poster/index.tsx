@@ -9,6 +9,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import "markdown-to-poster/dist/style.css";
+import "@/styles/card-poster.css";
 
 // .bg-spring-gradient-wave 需要设置这个css 的样式
 
